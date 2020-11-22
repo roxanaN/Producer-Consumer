@@ -1,0 +1,65 @@
+332CA Nemulescu Roxana-Elena
+Tema 1 - Marketplace
+
+MArketplace:
+    register_producer():
+       Fiecarui producer inregistrat, i-am oferit un raft in market,
+       alocand o lista pe pozitia indicata de id-ul acestuia.
+       ID-ul producer-ului este reprezentat de ordinea inregistrarii.
+
+    publish():
+        Daca s-a atins limita maxima de produse disponibile,
+        am returnat False, ca producatorul sa stie sa astepte pana cand
+        se elibereaza un loc pe raft. In caz contrar, produsul s-a
+        adaugat si producatorul a fost informat in acest sens.
+
+    new_cart():
+        Pentru fiecare cart nou, am alocat o lista in carts, la pozitia
+        specificata de id-ul oferit cart-ului.
+
+    add_to_cart():
+        Am parcurs rafturile fiecarui producator, in cautarea produsului.
+        Daca produsul s-a aflat pe raftul unuia dintre producatori,
+        am incetat cautarea, iesind din for cu id-ul producatorului la care
+        a fost gasit produsul si am adaugat in cos tuplul
+        (producer_id, product), pentru ca la un remove, sa stiu carui
+        producator sa ii inapoiez produsul.
+
+    remove_from_cart():
+        Am parcurs produsele din cart-ul consumer-ului care a solicitat
+        stergerea unui produs, in cautarea produsului respectiv.
+        Daca produsul a fost gasit, l-am sters din cos si l-am adaugat
+        in lista producatorului care l-a publicat.
+        In cazul in care produsul nu a fost gasit, nu se intampla nimic.
+
+Consumer:
+    Pentru fiecare lista din carts, am creat cate un cos nou,
+    apeland new_cart() si primind la schimb un id, folosit de
+    functiile din Marketplace, pentru a sti ce cart sa acceseze.
+
+    Fiind ceruta o anumita cantitate pentru fiecare produs,
+    am extras cantitatea in qty, pentru a sti de cate ori
+    este necesara o actiune (de add sau de remove)
+
+    La adaugarea unui produs in cos,
+    am apelat functia add_to_cart intr-un while, pentru ca,
+    atunci cand functia intoarce False, inseamna ca produsul
+    nu este disponibil si asteptam un timp pentru a incerca din nou,
+    facand acest lucru pana cand produsul este disponibil si
+    a fost adaugat cu succes (unctia add_to_cart returneaza True).
+
+    In cazul unei actiuni remove, cerem indepartarea produsului din cart,
+    iar daca acesta nu exista, functia remove_from_cart nu va face nimic \_O_/.
+
+    Dupa primirea comenzii, in urma apelarii place_order(), am parcurs
+    lista cu produse si le-am afisat, dupa formatul specificat in enunt.
+
+Producer:
+    Am ciclat prin lista de produse si le-am publicat in cantitatea specificata.
+    Daca nu exista suficint loc pentru a publica un produs, am asteptat
+    republish_wait_time sec, pana cand publicarea se realiza cu succes.
+    Dupa fiecare produs publicat, am asteptat time sec, pana am trecut la
+    urmatorul produs.
+
+ Pentru sincronizarea thread-urilor, am folosit liste, deoarece
+ acestea sunt thread-safe.
